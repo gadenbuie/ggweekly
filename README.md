@@ -28,8 +28,6 @@ library(ggweekly)
 ggweek_planner(
   start_day = "2019-04-01", 
   end_day = "2019-06-30", 
-  show_day_numbers = TRUE, 
-  show_month_boundaries = TRUE
 )
 ```
 
@@ -41,8 +39,8 @@ You can also create traditional calendars as well.
 ggweek_planner(
   start_day = "2019-04-01", 
   end_day = "2019-06-30", 
-  show_day_numbers = TRUE, 
   show_month_boundaries = FALSE, 
+  show_month_start_day = FALSE,
   week_start_label = "isoweek"
 ) + 
   ggplot2::ggtitle("2019") +

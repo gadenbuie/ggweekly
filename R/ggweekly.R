@@ -22,6 +22,8 @@
 #' @param holidays A tibble containing holiday dates in the same format as
 #'   `higlight_days`. Defaults to a list of US Federal Holidays. Set to `NULL`
 #'   to disable.
+#' @param font_label_text Font for label text, default is
+#'   [PT Sans Narrow](https://fonts.google.com/specimen/PT+Sans+Narrow).
 #' @export
 ggweek_planner <- function(
   start_day = lubridate::today(),
@@ -34,7 +36,8 @@ ggweek_planner <- function(
   highlight_text_size = 2,
   month_text_size = 4,
   month_color = "#f78154",
-  holidays = us_federal_holidays
+  holidays = us_federal_holidays,
+  font_label_text = "PT Sans Narrow"
 ) {
   old_opts <- options("lubridate.week.start" = 1)
   on.exit(options(old_opts))
@@ -87,7 +90,7 @@ ggweek_planner <- function(
     ggplot2::theme_minimal(base_family = "PT Sans") +
     ggplot2::theme(
       plot.title = ggplot2::element_text(hjust = 0.5),
-      axis.text = ggplot2::element_text("PT Sans Narrow"),
+      axis.text = ggplot2::element_text(font_label_text),
       axis.title = ggplot2::element_blank(),
       panel.grid = ggplot2::element_blank(),
       # axis.text.x.top = ggplot2::element_text(face = "bold"),
@@ -116,7 +119,7 @@ ggweek_planner <- function(
     gcal <- gcal +
       ggplot2::geom_text(
         ggplot2::aes(label = lubridate::day(day)),
-        family = "PT Sans Narrow",
+        family = font_label_text,
         color = "grey80",
         size = 2,
         hjust = 1,
@@ -136,7 +139,7 @@ ggweek_planner <- function(
       ggplot2::geom_text(
         data = day_one,
         ggplot2::aes(label = month),
-        family = "PT Sans Narrow",
+        family = font_label_text,
         color = month_color,
         size = month_text_size,
         hjust = 0,
@@ -159,7 +162,7 @@ ggweek_planner <- function(
       ggplot2::geom_text(
         data = dates %>% dplyr::inner_join(holidays, by = "day"),
         ggplot2::aes(label = label, color = color),
-        family = "PT Sans Narrow",
+        family = font_label_text,
         size = highlight_text_size,
         hjust = 0,
         nudge_x = -0.45,
