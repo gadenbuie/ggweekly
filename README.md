@@ -95,10 +95,6 @@ end_date <- lubridate::ceiling_date(lubridate::ymd("2019-12-31"), "week", week_s
   lubridate::days(1)
 week_dates <- seq(start_date, end_date, by = "56 day")
 
-showtext::showtext_auto()
-sysfonts::font_add_google("PT Sans")
-sysfonts::font_add_google("PT Sans Narrow")
-
 pdf(here::here("printable", "2019-weekly-planner.pdf"), width = 8.5, height = 11)
 for (idx_week in seq_along(week_dates)) {
   gcal <- ggweek_planner(start_day = week_dates[idx_week]) +
