@@ -1,0 +1,28 @@
+Package: ggweekly
+Title: Create a weekly planner using ggplot2
+Version: 0.0.1
+Authors@R: 
+    person(given = "Garrick",
+           family = "Aden-Buie",
+           role = c("aut", "cre"),
+           email = "garrick@adenbuie.com",
+           comment = c(ORCID = "0000-0002-7111-0077"))
+Description: A simple package to produce calendars with ggplot2.
+License: MIT + file LICENSE
+Depends:
+    R (>= 2.10)
+Imports: 
+    dplyr,
+    forcats,
+    ggplot2,
+    lubridate,
+    magrittr,
+    purrr,
+    rlang (>= 0.1.2),
+    tidyr
+Suggests: 
+    roxygen2
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1
