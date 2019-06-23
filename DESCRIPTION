@@ -9,6 +9,8 @@ Authors@R:
            comment = c(ORCID = "0000-0002-7111-0077"))
 Description: A simple package to produce calendars with ggplot2.
 License: MIT + file LICENSE
+URL: https://github.com/gadenbuie/ggweekly
+BugReports: https://github.com/gadenbuie/ggweekly/issues
 Depends:
     R (>= 2.10)
 Imports: 
