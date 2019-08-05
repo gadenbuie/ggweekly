@@ -18,7 +18,9 @@
 #'   with a dotted line?
 #' @param highlight_text_size Size of the text in the highlighted days.
 #' @param month_text_size The size of the text labelling the first day of the month.
+#' @param day_number_text_size The size of the text labelling day number.
 #' @param month_color The color of the boxes highlighting the first day of the month.
+#' @param day_number_color The color of the day number text.
 #' @param holidays A tibble containing holiday dates in the same format as
 #'   `higlight_days`. Defaults to a list of US Federal Holidays. Set to `NULL`
 #'   to disable.
@@ -35,7 +37,9 @@ ggweek_planner <- function(
   show_month_boundaries = TRUE,
   highlight_text_size = 2,
   month_text_size = 4,
+  day_number_text_size = 2,
   month_color = "#f78154",
+  day_number_color = "grey80",
   holidays = ggweekly::us_federal_holidays,
   font_label_text = "PT Sans Narrow"
 ) {
@@ -120,8 +124,8 @@ ggweek_planner <- function(
       ggplot2::geom_text(
         ggplot2::aes(label = lubridate::day(day)),
         family = font_label_text,
-        color = "grey80",
-        size = 2,
+        color = day_number_color,
+        size = day_number_text_size,
         hjust = 1,
         nudge_x = 0.45,
         vjust = 1,
