@@ -36,7 +36,7 @@ ggweek_planner <- function(
   highlight_text_size = 2,
   month_text_size = 4,
   month_color = "#f78154",
-  holidays = us_federal_holidays,
+  holidays = ggweekly::us_federal_holidays,
   font_label_text = "PT Sans Narrow"
 ) {
   old_opts <- options("lubridate.week.start" = 1)

@@ -10,7 +10,8 @@ ggweek_planner(start_day = lubridate::today(), end_day = start_day +
   show_day_numbers = TRUE, show_month_start_day = TRUE,
   show_month_boundaries = TRUE, highlight_text_size = 2,
   month_text_size = 4, month_color = "#f78154",
-  holidays = us_federal_holidays, font_label_text = "PT Sans Narrow")
+  holidays = ggweekly::us_federal_holidays,
+  font_label_text = "PT Sans Narrow")
 }
 \arguments{
 \item{start_day}{The starting day, either as a YYYY-mm-dd text string or
