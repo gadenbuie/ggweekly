@@ -43,7 +43,7 @@ ggweek_planner <- function(
   holidays = ggweekly::us_federal_holidays,
   font_label_text = "PT Sans Narrow"
 ) {
-  old_opts <- options("lubridate.week.start" = 1)
+  old_opts <- options("lubridate.week.start" = 1)# need to set to 7 for epiweek
   on.exit(options(old_opts))
 
   if (!inherits(start_day, "Date")) {
