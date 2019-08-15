@@ -228,7 +228,10 @@ ggweek_planner <- function(
   gcal
 }
 
-week_start_labels <- function(dates) {
+week_start_labels <- function(
+  dates,
+  week_start = getOption("lubridate.week.start", 1)
+) {
   dates %>%
     dplyr::arrange(day) %>%
     dplyr::group_by(week_year) %>%
@@ -236,7 +239,7 @@ week_start_labels <- function(dates) {
     dplyr::ungroup() %>%
     dplyr::arrange(day) %>%
     dplyr::mutate(
-      day = lubridate::floor_date(day, "week", week_start = 1),
+      day = lubridate::floor_date(day, "week", week_start = week_start),
       month = lubridate::month(day, label = TRUE),
       label = dplyr::case_when(
         month == dplyr::lag(month) ~ paste(lubridate::day(day)),
