@@ -6,7 +6,7 @@
 \usage{
 ggweek_planner(start_day = lubridate::today(), end_day = start_day +
   lubridate::weeks(8) - lubridate::days(1), highlight_days = NULL,
-  week_start_label = c("month day", "isoweek", "none"),
+  week_start_label = c("month day", "isoweek", "epiweek", "none"),
   show_day_numbers = TRUE, show_month_start_day = TRUE,
   show_month_boundaries = TRUE, highlight_text_size = 2,
   month_text_size = 4, day_number_text_size = 2,
@@ -26,7 +26,7 @@ with columns \code{day}, \code{label}, \code{color}, and \code{fill}.}
 
 \item{week_start_label}{What labels should be used for the week start, i.e.
 to the left of the first day of the week? One of \code{"month day"},
-\code{"isoweek"}, or \code{"none"}.}
+\code{"isoweek"}, \code{"epiweek"}, or \code{"none"}.}
 
 \item{show_day_numbers}{Should day numbers be included in each box of the
 calendar?}
