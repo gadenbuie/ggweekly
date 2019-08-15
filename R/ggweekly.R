@@ -10,7 +10,7 @@
 #'   with columns `day`, `label`, `color`, and `fill`.
 #' @param week_start_label What labels should be used for the week start, i.e.
 #'   to the left of the first day of the week? One of `"month day"`,
-#'   `"isoweek"`, or `"none"`.
+#'   `"isoweek"`, `"epiweek"`, or `"none"`.
 #' @param show_day_numbers Should day numbers be included in each box of the
 #'   calendar?
 #' @param show_month_start_day Should the first day of the month be highlighted?
@@ -31,7 +31,7 @@ ggweek_planner <- function(
   start_day = lubridate::today(),
   end_day = start_day + lubridate::weeks(8) - lubridate::days(1),
   highlight_days = NULL,
-  week_start_label = c("month day", "isoweek", "none"),
+  week_start_label = c("month day", "isoweek", "epiweek", "none"),
   show_day_numbers = TRUE,
   show_month_start_day = TRUE,
   show_month_boundaries = TRUE,
@@ -64,12 +64,25 @@ ggweek_planner <- function(
       day       = seq_days,
       wday_name = lubridate::wday(day, label = TRUE, abbr = TRUE),
       weekend   = lubridate::wday(day) > 5,
-      isoweek   = lubridate::isoweek(day),
-      month     = lubridate::month(day, label = TRUE, abbr = FALSE),
-      isoyear   = lubridate::isoyear(day),
-      week_year = sprintf("%s - %s", isoyear, isoweek)
-    ) %>%
+      month     = lubridate::month(day, label = TRUE, abbr = FALSE)
+    )
+
+  if (week_start_label == "epiweek") {
+    dates <- dates %>%
+      dplyr::mutate(
+        week   = lubridate::epiweek(day),
+        year   = lubridate::epiyear(day)
+      )
+  } else {
+    dates <- dates %>%
+      dplyr::mutate(
+        week   = lubridate::isoweek(day),
+        year   = lubridate::isoyear(day)
+      )
+  }
+  dates <- dates %>%
     dplyr::mutate(
+      week_year = sprintf("%s - %s", year, week),
       week_year = forcats::fct_inorder(week_year),
       week_year = forcats::fct_rev(week_year)
     )
@@ -111,7 +124,7 @@ ggweek_planner <- function(
         breaks = levels(dates$week_year),
         labels = week_start_labels(dates)
       )
-  } else if (week_start_label == "isoweek") {
+  } else if (week_start_label %in% c("isoweek", "epiweek")) {
     gcal <- gcal +
       ggplot2::scale_y_discrete(
         breaks = levels(dates$week_year),
