@@ -63,6 +63,20 @@ ggweek_planner(
   ggplot2::facet_wrap(~ month, scales = 'free')
 ```
 
+Other options allow weeks to start on Sunday, with or without weekend color fills.
+
+```{r yearly-calendar-opts, fig.height = 4, fig.width = 12}
+ggweek_planner(
+  start_day = "2019-04-01", 
+  end_day = "2019-06-30", 
+  show_month_boundaries = FALSE, 
+  show_month_start_day = FALSE,
+  week_start_label = "epiweek",
+  weekend_fill = "#FFFFFF"
+) + 
+  ggplot2::ggtitle("2019") +
+  ggplot2::facet_wrap(~ month, scales = 'free')
+```
 
 ## Project Planning
 

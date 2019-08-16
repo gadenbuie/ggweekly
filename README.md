@@ -49,6 +49,24 @@ ggweek_planner(
 
 <img src="man/figures/README-yearly-calendar-1.png" width="100%" />
 
+Other options allow weeks to start on Sunday, with or without weekend
+color fills.
+
+``` r
+ggweek_planner(
+  start_day = "2019-04-01", 
+  end_day = "2019-06-30", 
+  show_month_boundaries = FALSE, 
+  show_month_start_day = FALSE,
+  week_start_label = "epiweek",
+  weekend_fill = "#FFFFFF"
+) + 
+  ggplot2::ggtitle("2019") +
+  ggplot2::facet_wrap(~ month, scales = 'free')
+```
+
+<img src="man/figures/README-yearly-calendar-opts-1.png" width="100%" />
+
 ## Project Planning
 
 Create a tibble of days to highlight and pass into `highlight_days`.
