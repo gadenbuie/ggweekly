@@ -11,7 +11,7 @@ ggweek_planner(start_day = lubridate::today(), end_day = start_day +
   show_month_boundaries = TRUE, highlight_text_size = 2,
   month_text_size = 4, day_number_text_size = 2,
   month_color = "#f78154", day_number_color = "grey80",
-  holidays = ggweekly::us_federal_holidays,
+  weekend_fill = "#f8f8f8", holidays = ggweekly::us_federal_holidays,
   font_label_text = "PT Sans Narrow")
 }
 \arguments{
@@ -45,6 +45,8 @@ with a dotted line?}
 \item{month_color}{The color of the boxes highlighting the first day of the month.}
 
 \item{day_number_color}{The color of the day number text.}
+
+\item{weekend_fill}{The color to fill the weekend days.}
 
 \item{holidays}{A tibble containing holiday dates in the same format as
 \code{higlight_days}. Defaults to a list of US Federal Holidays. Set to \code{NULL}
