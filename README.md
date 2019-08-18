@@ -41,7 +41,8 @@ ggweek_planner(
   end_day = "2019-06-30", 
   show_month_boundaries = FALSE, 
   show_month_start_day = FALSE,
-  week_start_label = "isoweek"
+  week_start = "isoweek",
+  week_start_label = "week"
 ) + 
   ggplot2::ggtitle("2019") +
   ggplot2::facet_wrap(~ month, scales = 'free')
@@ -49,23 +50,44 @@ ggweek_planner(
 
 <img src="man/figures/README-yearly-calendar-1.png" width="100%" />
 
+Use `week_start` to choose between weeks that start on Monday
+(`"isoweek"`) or weeks that start on Sunday (`"epiweek"`). You can also
+set (or remove) the weekend color fill with `weekend_fill`.
+
+``` r
+ggweek_planner(
+  start_day = "2019-04-01", 
+  end_day = "2019-06-30", 
+  show_month_boundaries = FALSE, 
+  show_month_start_day = FALSE,
+  week_start = "epiweek",
+  week_start_label = "week",
+  weekend_fill = "#FFFFFF"
+) + 
+  ggplot2::ggtitle("2019") +
+  ggplot2::facet_wrap(~ month, scales = 'free')
+```
+
+<img src="man/figures/README-yearly-calendar-opts-1.png" width="100%" />
+
 ## Project Planning
 
 Create a tibble of days to highlight and pass into `highlight_days`.
 
 ``` r
 project_days <- dplyr::tribble(
-         ~ day,       ~ label,   ~ color,    ~ fill,
+          ~day,             ~label,    ~color,     ~fill,
   "2019-07-02", "Project Kick Off", "#02307a", "#02307a",
-  "2019-07-12", "LOI Due", "#02307a", "#02307a",
-  "2019-07-26", "First Draft", "#02307a", "#02307a",
-  "2019-08-05", "Work week", "#bf006c", "#bf006c",
-  "2019-08-06", "", NA, "#bf006c",
-  "2019-08-07", "", NA, "#bf006c",
-  "2019-08-08", "", NA, "#bf006c",
-  "2019-08-09", "", NA, "#bf006c",
-  "2019-08-23", "Final Submission", "#02307a", "#02307a",
+  "2019-07-12",          "LOI Due", "#02307a", "#02307a",
+  "2019-07-26",      "First Draft", "#02307a", "#02307a",
+  "2019-08-05",        "Work week", "#bf006c", "#bf006c",
+  "2019-08-06",                 NA,        NA, "#bf006c",
+  "2019-08-07",                 NA,        NA, "#bf006c",
+  "2019-08-08",                 NA,        NA, "#bf006c",
+  "2019-08-09",                 NA,        NA, "#bf006c",
+  "2019-08-23", "Final Submission", "#02307a", "#02307a"
 )
+
 
 ggweek_planner(
   start_day = "2019-07-01",
@@ -85,7 +107,8 @@ Here’s a printable calendar of 8 week time periods for 2019 and 2020:
 
 The code chunk below shows how this PDF was created and can be adjusted
 as needed. I included margins to the left and below the calendar for
-extra notes.
+extra
+notes.
 
 ``` r
 start_date <- lubridate::floor_date(lubridate::ymd("2019-01-01"), "week", week_start = 1)
@@ -105,12 +128,12 @@ for (idx_week in seq_along(week_dates)) {
   print(gcal)
 }
 dev.off()
-#> quartz_off_screen 
-#>                 2
+#> png 
+#>   2
 ```
 
-    #> quartz_off_screen 
-    #>                 2
+    #> png 
+    #>   2
 
 And here are fullpage yearly calendars for 2019 and 2020.
 
@@ -126,7 +149,7 @@ g2019 <- ggweek_planner(
   show_day_numbers = TRUE, 
   show_month_boundaries = FALSE, 
   show_month_start_day = FALSE,
-  week_start_label = "isoweek"
+  week_start_label = "week"
 ) + 
   ggplot2::ggtitle("2019") +
   ggplot2::facet_wrap(~ month, scales = 'free')

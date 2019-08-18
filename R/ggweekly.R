@@ -7,10 +7,12 @@
 #' @param end_day The ending day, either as a YYYY-mm-dd text string or
 #'   using [lubridate::ymd()].
 #' @param highlight_days Special days to be highlighted, formatted as a tibble
-#'   with columns `day`, `label`, `color`, and `fill`.
+#' with columns `day`, `label`, `color`, and `fill`.
+#' @param week_start Should the week start on Monday (`"isoweek"`) or on Sunday
+#'   (`"epiweek"`)?
 #' @param week_start_label What labels should be used for the week start, i.e.
-#'   to the left of the first day of the week? One of `"month day"`,
-#'   `"isoweek"`, or `"none"`.
+#'   to the left of the first day of the week? One of `"month day"`, `"week"`,
+#'   or `"none"`.
 #' @param show_day_numbers Should day numbers be included in each box of the
 #'   calendar?
 #' @param show_month_start_day Should the first day of the month be highlighted?
@@ -21,17 +23,22 @@
 #' @param day_number_text_size The size of the text labelling day number.
 #' @param month_color The color of the boxes highlighting the first day of the month.
 #' @param day_number_color The color of the day number text.
+#' @param weekend_fill The color to fill the weekend days.
 #' @param holidays A tibble containing holiday dates in the same format as
 #'   `higlight_days`. Defaults to a list of US Federal Holidays. Set to `NULL`
 #'   to disable.
 #' @param font_label_text Font for label text, default is
 #'   [PT Sans Narrow](https://fonts.google.com/specimen/PT+Sans+Narrow).
+#'
+#' @importFrom rlang %||%
+#'
 #' @export
 ggweek_planner <- function(
   start_day = lubridate::today(),
   end_day = start_day + lubridate::weeks(8) - lubridate::days(1),
   highlight_days = NULL,
-  week_start_label = c("month day", "isoweek", "none"),
+  week_start = c("isoweek", "epiweek"),
+  week_start_label = c("month day", "week", "none"),
   show_day_numbers = TRUE,
   show_month_start_day = TRUE,
   show_month_boundaries = TRUE,
@@ -40,10 +47,20 @@ ggweek_planner <- function(
   day_number_text_size = 2,
   month_color = "#f78154",
   day_number_color = "grey80",
+  weekend_fill = "#f8f8f8",
   holidays = ggweekly::us_federal_holidays,
   font_label_text = "PT Sans Narrow"
 ) {
-  old_opts <- options("lubridate.week.start" = 1)
+  week_start <- match.arg(week_start)
+  if (week_start == "epiweek") {
+    old_opts <- options("lubridate.week.start" = 7)
+    get_week <- lubridate::epiweek
+    get_year <- lubridate::epiyear
+  } else {
+    old_opts <- options("lubridate.week.start" = 1)
+    get_week <- lubridate::isoweek
+    get_year <- lubridate::isoyear
+  }
   on.exit(options(old_opts))
 
   if (!inherits(start_day, "Date")) {
@@ -63,13 +80,15 @@ ggweek_planner <- function(
     dplyr::tibble(
       day       = seq_days,
       wday_name = lubridate::wday(day, label = TRUE, abbr = TRUE),
-      weekend   = lubridate::wday(day) > 5,
-      isoweek   = lubridate::isoweek(day),
+      weekend   = wday_name %in% c("Sat", "Sun"),
+      week      = get_week(day),
       month     = lubridate::month(day, label = TRUE, abbr = FALSE),
-      isoyear   = lubridate::isoyear(day),
-      week_year = sprintf("%s - %s", isoyear, isoweek)
-    ) %>%
+      year      = get_year(day)
+    )
+
+  dates <- dates %>%
     dplyr::mutate(
+      week_year = sprintf("%s - %s", year, week),
       week_year = forcats::fct_inorder(week_year),
       week_year = forcats::fct_rev(week_year)
     )
@@ -77,11 +96,13 @@ ggweek_planner <- function(
   day_one <- dates %>%
     dplyr::filter(lubridate::day(day) == 1)
 
+  weekend_fill <- weekend_fill %||% "#FFFFFF"
+
   gcal <-
     dates %>%
     dplyr::mutate(
       # Softly fill in the weekend days
-      weekend = dplyr::case_when(weekend ~ "#f8f8f8", TRUE ~ "#FFFFFF")
+      weekend = dplyr::if_else(weekend, weekend_fill, "#FFFFFF")
     ) %>%
     dplyr::arrange(day) %>%
     ggplot2::ggplot() +
@@ -111,7 +132,7 @@ ggweek_planner <- function(
         breaks = levels(dates$week_year),
         labels = week_start_labels(dates)
       )
-  } else if (week_start_label == "isoweek") {
+  } else if (week_start_label == "week") {
     gcal <- gcal +
       ggplot2::scale_y_discrete(
         breaks = levels(dates$week_year),

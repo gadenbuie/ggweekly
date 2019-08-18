@@ -6,12 +6,13 @@
 \usage{
 ggweek_planner(start_day = lubridate::today(), end_day = start_day +
   lubridate::weeks(8) - lubridate::days(1), highlight_days = NULL,
-  week_start_label = c("month day", "isoweek", "none"),
+  week_start = c("isoweek", "epiweek"),
+  week_start_label = c("month day", "week", "none"),
   show_day_numbers = TRUE, show_month_start_day = TRUE,
   show_month_boundaries = TRUE, highlight_text_size = 2,
   month_text_size = 4, day_number_text_size = 2,
   month_color = "#f78154", day_number_color = "grey80",
-  holidays = ggweekly::us_federal_holidays,
+  weekend_fill = "#f8f8f8", holidays = ggweekly::us_federal_holidays,
   font_label_text = "PT Sans Narrow")
 }
 \arguments{
@@ -24,9 +25,12 @@ using \code{\link[lubridate:ymd]{lubridate::ymd()}}.}
 \item{highlight_days}{Special days to be highlighted, formatted as a tibble
 with columns \code{day}, \code{label}, \code{color}, and \code{fill}.}
 
+\item{week_start}{Should the week start on Monday (\code{"isoweek"}) or on Sunday
+(\code{"epiweek"})?}
+
 \item{week_start_label}{What labels should be used for the week start, i.e.
-to the left of the first day of the week? One of \code{"month day"},
-\code{"isoweek"}, or \code{"none"}.}
+to the left of the first day of the week? One of \code{"month day"}, \code{"week"},
+or \code{"none"}.}
 
 \item{show_day_numbers}{Should day numbers be included in each box of the
 calendar?}
@@ -45,6 +49,8 @@ with a dotted line?}
 \item{month_color}{The color of the boxes highlighting the first day of the month.}
 
 \item{day_number_color}{The color of the day number text.}
+
+\item{weekend_fill}{The color to fill the weekend days.}
 
 \item{holidays}{A tibble containing holiday dates in the same format as
 \code{higlight_days}. Defaults to a list of US Federal Holidays. Set to \code{NULL}

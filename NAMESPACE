@@ -3,6 +3,7 @@
 export("%>%")
 export(ggweek_planner)
 importFrom(magrittr,"%>%")
+importFrom(rlang,"%||%")
 importFrom(rlang,":=")
 importFrom(rlang,.data)
 importFrom(rlang,enexpr)
