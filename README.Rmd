@@ -57,13 +57,16 @@ ggweek_planner(
   end_day = "2019-06-30", 
   show_month_boundaries = FALSE, 
   show_month_start_day = FALSE,
-  week_start_label = "isoweek"
+  week_start = "isoweek",
+  week_start_label = "week"
 ) + 
   ggplot2::ggtitle("2019") +
   ggplot2::facet_wrap(~ month, scales = 'free')
 ```
 
-Other options allow weeks to start on Sunday, with or without weekend color fills.
+Use `week_start` to choose between weeks that start on Monday (`"isoweek"`)
+or weeks that start on Sunday (`"epiweek"`).
+You can also set (or remove) the weekend color fill with `weekend_fill`.
 
 ```{r yearly-calendar-opts, fig.height = 4, fig.width = 12}
 ggweek_planner(
@@ -71,7 +74,8 @@ ggweek_planner(
   end_day = "2019-06-30", 
   show_month_boundaries = FALSE, 
   show_month_start_day = FALSE,
-  week_start_label = "epiweek",
+  week_start = "epiweek",
+  week_start_label = "week",
   weekend_fill = "#FFFFFF"
 ) + 
   ggplot2::ggtitle("2019") +
@@ -84,17 +88,18 @@ Create a tibble of days to highlight and pass into `highlight_days`.
 
 ```{r project}
 project_days <- dplyr::tribble(
-         ~ day,       ~ label,   ~ color,    ~ fill,
+          ~day,             ~label,    ~color,     ~fill,
   "2019-07-02", "Project Kick Off", "#02307a", "#02307a",
-  "2019-07-12", "LOI Due", "#02307a", "#02307a",
-  "2019-07-26", "First Draft", "#02307a", "#02307a",
-  "2019-08-05", "Work week", "#bf006c", "#bf006c",
-  "2019-08-06", "", NA, "#bf006c",
-  "2019-08-07", "", NA, "#bf006c",
-  "2019-08-08", "", NA, "#bf006c",
-  "2019-08-09", "", NA, "#bf006c",
-  "2019-08-23", "Final Submission", "#02307a", "#02307a",
+  "2019-07-12",          "LOI Due", "#02307a", "#02307a",
+  "2019-07-26",      "First Draft", "#02307a", "#02307a",
+  "2019-08-05",        "Work week", "#bf006c", "#bf006c",
+  "2019-08-06",                 NA,        NA, "#bf006c",
+  "2019-08-07",                 NA,        NA, "#bf006c",
+  "2019-08-08",                 NA,        NA, "#bf006c",
+  "2019-08-09",                 NA,        NA, "#bf006c",
+  "2019-08-23", "Final Submission", "#02307a", "#02307a"
 )
+
 
 ggweek_planner(
   start_day = "2019-07-01",
@@ -167,7 +172,7 @@ g2019 <- ggweek_planner(
   show_day_numbers = TRUE, 
   show_month_boundaries = FALSE, 
   show_month_start_day = FALSE,
-  week_start_label = "isoweek"
+  week_start_label = "week"
 ) + 
   ggplot2::ggtitle("2019") +
   ggplot2::facet_wrap(~ month, scales = 'free')
@@ -186,7 +191,7 @@ g2019 <- ggweek_planner(
   show_day_numbers = TRUE, 
   show_month_boundaries = FALSE, 
   show_month_start_day = FALSE,
-  week_start_label = "isoweek"
+  week_start_label = "week"
 ) + 
   ggplot2::ggtitle("2020") +
   ggplot2::facet_wrap(~ month, scales = 'free')

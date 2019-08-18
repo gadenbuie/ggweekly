@@ -1,12 +1,16 @@
 Package: ggweekly
 Title: Create a weekly planner using ggplot2
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: 
-    person(given = "Garrick",
-           family = "Aden-Buie",
-           role = c("aut", "cre"),
-           email = "garrick@adenbuie.com",
-           comment = c(ORCID = "0000-0002-7111-0077"))
+    c(person(given = "Garrick",
+             family = "Aden-Buie",
+             role = c("aut", "cre"),
+             email = "garrick@adenbuie.com",
+             comment = c(ORCID = "0000-0002-7111-0077")),
+      person(given = "Travis",
+             family = "Gerke",
+             role = "ctb",
+             email = "tgerke@hsph.harvard.edu"))
 Description: A simple package to produce calendars with ggplot2.
 License: MIT + file LICENSE
 URL: https://github.com/gadenbuie/ggweekly
