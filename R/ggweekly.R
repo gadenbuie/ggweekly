@@ -7,10 +7,12 @@
 #' @param end_day The ending day, either as a YYYY-mm-dd text string or
 #'   using [lubridate::ymd()].
 #' @param highlight_days Special days to be highlighted, formatted as a tibble
-#'   with columns `day`, `label`, `color`, and `fill`.
+#' with columns `day`, `label`, `color`, and `fill`.
+#' @param week_start Should the week start on Monday (`"isoweek"`) or on Sunday
+#'   (`"epiweek"`)?
 #' @param week_start_label What labels should be used for the week start, i.e.
-#'   to the left of the first day of the week? One of `"month day"`,
-#'   `"isoweek"`, `"epiweek"`, or `"none"`.
+#'   to the left of the first day of the week? One of `"month day"`, `"week"`,
+#'   or `"none"`.
 #' @param show_day_numbers Should day numbers be included in each box of the
 #'   calendar?
 #' @param show_month_start_day Should the first day of the month be highlighted?
@@ -27,12 +29,16 @@
 #'   to disable.
 #' @param font_label_text Font for label text, default is
 #'   [PT Sans Narrow](https://fonts.google.com/specimen/PT+Sans+Narrow).
+#'
+#' @importFrom rlang %||%
+#'
 #' @export
 ggweek_planner <- function(
   start_day = lubridate::today(),
   end_day = start_day + lubridate::weeks(8) - lubridate::days(1),
   highlight_days = NULL,
-  week_start_label = c("month day", "isoweek", "epiweek", "none"),
+  week_start = c("isoweek", "epiweek"),
+  week_start_label = c("month day", "week", "none"),
   show_day_numbers = TRUE,
   show_month_start_day = TRUE,
   show_month_boundaries = TRUE,
@@ -45,11 +51,15 @@ ggweek_planner <- function(
   holidays = ggweekly::us_federal_holidays,
   font_label_text = "PT Sans Narrow"
 ) {
-
-  if (week_start_label == "epiweek") {
+  week_start <- match.arg(week_start)
+  if (week_start == "epiweek") {
     old_opts <- options("lubridate.week.start" = 7)
+    get_week <- lubridate::epiweek
+    get_year <- lubridate::epiyear
   } else {
     old_opts <- options("lubridate.week.start" = 1)
+    get_week <- lubridate::isoweek
+    get_year <- lubridate::isoyear
   }
   on.exit(options(old_opts))
 
@@ -71,22 +81,11 @@ ggweek_planner <- function(
       day       = seq_days,
       wday_name = lubridate::wday(day, label = TRUE, abbr = TRUE),
       weekend   = wday_name %in% c("Sat", "Sun"),
-      month     = lubridate::month(day, label = TRUE, abbr = FALSE)
+      week      = get_week(day),
+      month     = lubridate::month(day, label = TRUE, abbr = FALSE),
+      year      = get_year(day)
     )
 
-  if (week_start_label == "epiweek") {
-    dates <- dates %>%
-      dplyr::mutate(
-        week   = lubridate::epiweek(day),
-        year   = lubridate::epiyear(day)
-      )
-  } else {
-    dates <- dates %>%
-      dplyr::mutate(
-        week   = lubridate::isoweek(day),
-        year   = lubridate::isoyear(day)
-      )
-  }
   dates <- dates %>%
     dplyr::mutate(
       week_year = sprintf("%s - %s", year, week),
@@ -97,11 +96,13 @@ ggweek_planner <- function(
   day_one <- dates %>%
     dplyr::filter(lubridate::day(day) == 1)
 
+  weekend_fill <- weekend_fill %||% "#FFFFFF"
+
   gcal <-
     dates %>%
     dplyr::mutate(
       # Softly fill in the weekend days
-      weekend = dplyr::case_when(weekend ~ weekend_fill, TRUE ~ "#FFFFFF")
+      weekend = dplyr::if_else(weekend, weekend_fill, "#FFFFFF")
     ) %>%
     dplyr::arrange(day) %>%
     ggplot2::ggplot() +
@@ -131,7 +132,7 @@ ggweek_planner <- function(
         breaks = levels(dates$week_year),
         labels = week_start_labels(dates)
       )
-  } else if (week_start_label %in% c("isoweek", "epiweek")) {
+  } else if (week_start_label == "week") {
     gcal <- gcal +
       ggplot2::scale_y_discrete(
         breaks = levels(dates$week_year),
