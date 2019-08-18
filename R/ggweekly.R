@@ -101,22 +101,22 @@ ggweek_planner <- function(
   dates <-
     dplyr::tibble(
       day       = seq_days,
-      wday_name = lubridate::wday(day, label = TRUE, abbr = TRUE),
-      weekend   = wday_name %in% c("Sat", "Sun"),
-      week      = get_week(day),
-      month     = lubridate::month(day, label = TRUE, abbr = FALSE),
-      year      = get_year(day)
+      wday_name = lubridate::wday(.data$day, label = TRUE, abbr = TRUE),
+      weekend   = .data$wday_name %in% c("Sat", "Sun"),
+      week      = get_week(.data$day),
+      month     = lubridate::month(.data$day, label = TRUE, abbr = FALSE),
+      year      = get_year(.data$day)
     )
 
   dates <- dates %>%
     dplyr::mutate(
-      week_year = sprintf("%s - %s", year, week),
-      week_year = forcats::fct_inorder(week_year),
-      week_year = forcats::fct_rev(week_year)
+      week_year = sprintf("%s - %s", .data$year, .data$week),
+      week_year = forcats::fct_inorder(.data$week_year),
+      week_year = forcats::fct_rev(.data$week_year)
     )
 
   day_one <- dates %>%
-    dplyr::filter(lubridate::day(day) == 1)
+    dplyr::filter(lubridate::day(.data$day) == 1)
 
   weekend_fill <- weekend_fill %||% "#FFFFFF"
 
@@ -124,12 +124,12 @@ ggweek_planner <- function(
     dates %>%
     dplyr::mutate(
       # Softly fill in the weekend days
-      weekend = dplyr::if_else(weekend, weekend_fill, "#FFFFFF")
+      weekend = dplyr::if_else(.data$weekend, weekend_fill, "#FFFFFF")
     ) %>%
-    dplyr::arrange(day) %>%
+    dplyr::arrange(.data$day) %>%
     ggplot2::ggplot() +
-    ggplot2::aes(wday_name, week_year) +
-    ggplot2::geom_tile(ggplot2::aes(fill = weekend), color = "#aaaaaa") +
+    ggplot2::aes(.data$wday_name, .data$week_year) +
+    ggplot2::geom_tile(ggplot2::aes(fill = .data$weekend), color = "#aaaaaa") +
     ggplot2::scale_x_discrete(position = "top") +
     ggplot2::scale_fill_identity() +
     ggplot2::scale_color_identity() +
@@ -165,7 +165,7 @@ ggweek_planner <- function(
   if (show_day_numbers) {
     gcal <- gcal +
       ggplot2::geom_text(
-        ggplot2::aes(label = lubridate::day(day)),
+        ggplot2::aes(label = lubridate::day(.data$day)),
         family = font_label_text,
         color = day_number_color,
         size = day_number_text_size,
@@ -185,7 +185,7 @@ ggweek_planner <- function(
       ) +
       ggplot2::geom_text(
         data = day_one,
-        ggplot2::aes(label = month),
+        ggplot2::aes(label = .data$month),
         family = font_label_text,
         color = month_color,
         size = month_text_size,
@@ -202,13 +202,13 @@ ggweek_planner <- function(
     gcal <- gcal +
       ggplot2::geom_tile(
         data = dates %>% dplyr::inner_join(holidays, by = "day"),
-        ggplot2::aes(fill = fill),
+        ggplot2::aes(fill = .data$fill),
         color = NA,
         alpha = 0.25
       ) +
       ggplot2::geom_text(
         data = dates %>% dplyr::inner_join(holidays, by = "day"),
-        ggplot2::aes(label = label, color = color),
+        ggplot2::aes(label = .data$label, color = .data$color),
         family = font_label_text,
         size = highlight_text_size,
         hjust = 0,
@@ -224,13 +224,13 @@ ggweek_planner <- function(
     gcal <- gcal +
       ggplot2::geom_tile(
         data = dates %>% dplyr::inner_join(highlight_days, by = "day"),
-        ggplot2::aes(fill = fill),
+        ggplot2::aes(fill = .data$fill),
         color = NA,
         alpha = 0.25
       ) +
       ggplot2::geom_text(
         data = dates %>% dplyr::inner_join(highlight_days, by = "day"),
-        ggplot2::aes(label = label, color = color),
+        ggplot2::aes(label = .data$label, color = .data$color),
         family = "PT Sans Narrow",
         size = highlight_text_size,
         hjust = 0,
@@ -248,7 +248,7 @@ ggweek_planner <- function(
       gcal <- gcal +
         ggplot2::geom_segment(
           data = month_boundaries %>% tidyr::unnest(!!rlang::sym(boundary)),
-          ggplot2::aes(x = x, y = y, xend = xend, yend = yend),
+          ggplot2::aes(x = .data$x, y = .data$y, xend = .data$xend, yend = .data$yend),
           color = "#999999",
           linetype = 2
         )
@@ -263,49 +263,49 @@ week_start_labels <- function(
   week_start = getOption("lubridate.week.start", 1)
 ) {
   dates %>%
-    dplyr::arrange(day) %>%
-    dplyr::group_by(week_year) %>%
+    dplyr::arrange(.data$day) %>%
+    dplyr::group_by(.data$week_year) %>%
     dplyr::slice(1) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(day) %>%
+    dplyr::arrange(.data$day) %>%
     dplyr::mutate(
-      day = lubridate::floor_date(day, "week", week_start = week_start),
-      month = lubridate::month(day, label = TRUE),
+      day = lubridate::floor_date(.data$day, "week", week_start = week_start),
+      month = lubridate::month(.data$day, label = TRUE),
       label = dplyr::case_when(
-        month == dplyr::lag(month) ~ paste(lubridate::day(day)),
-        TRUE ~ sprintf("%s %4i", month, lubridate::day(day))
+        month == dplyr::lag(.data$month) ~ paste(lubridate::day(.data$day)),
+        TRUE ~ sprintf("%s %4i", .data$month, lubridate::day(.data$day))
       )
     ) %>%
-    dplyr::select(label, week_year) %>%
+    dplyr::select("label", "week_year") %>%
     purrr::reduce(purrr::set_names)
 }
 
 generate_month_boundaries <- function(dates) {
   dates %>%
-    dplyr::filter(lubridate::day(day) == 1) %>%
-    dplyr::select(day, month, wday_name, week_year) %>%
-    dplyr::mutate_at(dplyr::vars(wday_name, week_year), as.integer) %>%
+    dplyr::filter(lubridate::day(.data$day) == 1) %>%
+    dplyr::select(.data$day, .data$month, .data$wday_name, .data$week_year) %>%
+    dplyr::mutate_at(dplyr::vars(.data$wday_name, .data$week_year), as.integer) %>%
     dplyr::mutate(
-      left = purrr::map2(wday_name, week_year, ~ {
+      left = purrr::map2(.data$wday_name, .data$week_year, ~ {
         # n/a if month changes on first day
         if (.x == 1) return(dplyr::tibble(.missing = NA))
         dplyr::tibble(
           x = 0.5,      xend = .x - 0.5,
-          y = .y - 0.5, yend = y
+          y = .y - 0.5, yend = .data$y
         )
       }),
-      up = purrr::map2(wday_name, week_year, ~ {
+      up = purrr::map2(.data$wday_name, .data$week_year, ~ {
         # n/a if month changes on first day
         if (.x == 1) return(dplyr::tibble(.missing = NA))
         dplyr::tibble(
-          x = .x - 0.5, xend = x,
+          x = .x - 0.5, xend = .data$x,
           y = .y - 0.5, yend = .y + 0.5
         )
       }),
-      right = purrr::map2(wday_name, week_year, ~ {
+      right = purrr::map2(.data$wday_name, .data$week_year, ~ {
         dplyr::tibble(
           x = .x - 0.5, xend = 7.5,
-          y = .y + 0.5, yend = y
+          y = .y + 0.5, yend = .data$y
         )
       })
     )
