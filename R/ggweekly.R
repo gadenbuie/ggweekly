@@ -30,8 +30,30 @@
 #' @param font_label_text Font for label text, default is
 #'   [PT Sans Narrow](https://fonts.google.com/specimen/PT+Sans+Narrow).
 #'
-#' @importFrom rlang %||%
+#' @return A ggplot2 object with the weekly calendar plot.
 #'
+#' @examples
+#' \dontrun{
+#' # Create a weekly planner
+#' ggweek_planner(
+#'   start_day = "2019-04-01",
+#'   end_day = "2019-06-30",
+#' )
+#'
+#' # Create a standard calendar
+#' ggweek_planner(
+#'   start_day = "2019-04-01",
+#'   end_day = "2019-06-30",
+#'   show_month_boundaries = FALSE,
+#'   show_month_start_day = FALSE,
+#'   week_start = "isoweek",
+#'   week_start_label = "week"
+#' ) +
+#'   ggplot2::ggtitle("2019") +
+#'   ggplot2::facet_wrap(~ month, scales = 'free')
+#' }
+#'
+#' @importFrom rlang %||%
 #' @export
 ggweek_planner <- function(
   start_day = lubridate::today(),
