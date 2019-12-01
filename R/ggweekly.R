@@ -24,6 +24,8 @@
 #' @param month_color The color of the boxes highlighting the first day of the month.
 #' @param day_number_color The color of the day number text.
 #' @param weekend_fill The color to fill the weekend days.
+#' @param base_font_family Base font passed to \code{\link{ggplot2::theme_minimal}},
+#'   default is "PT Sans".
 #' @param holidays A tibble containing holiday dates in the same format as
 #'   `higlight_days`. Defaults to a list of US Federal Holidays. Set to `NULL`
 #'   to disable.
@@ -71,6 +73,7 @@ ggweek_planner <- function(
   day_number_color = "grey80",
   weekend_fill = "#f8f8f8",
   holidays = ggweekly::us_federal_holidays,
+  base_font_family = "PT Sans",
   font_label_text = "PT Sans Narrow"
 ) {
   week_start <- match.arg(week_start)
@@ -134,7 +137,7 @@ ggweek_planner <- function(
     ggplot2::scale_fill_identity() +
     ggplot2::scale_color_identity() +
     ggplot2::guides(fill = FALSE) +
-    ggplot2::theme_minimal(base_family = "PT Sans") +
+    ggplot2::theme_minimal(base_family = base_font_family) +
     ggplot2::theme(
       plot.title = ggplot2::element_text(hjust = 0.5),
       axis.text = ggplot2::element_text(font_label_text),
@@ -231,7 +234,7 @@ ggweek_planner <- function(
       ggplot2::geom_text(
         data = dates %>% dplyr::inner_join(highlight_days, by = "day"),
         ggplot2::aes(label = .data$label, color = .data$color),
-        family = "PT Sans Narrow",
+        family = font_label_text,
         size = highlight_text_size,
         hjust = 0,
         nudge_x = -0.45,
