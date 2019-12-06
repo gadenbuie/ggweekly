@@ -24,13 +24,14 @@
 #' @param month_color The color of the boxes highlighting the first day of the month.
 #' @param day_number_color The color of the day number text.
 #' @param weekend_fill The color to fill the weekend days.
-#' @param base_font_family Base font passed to \code{\link{ggplot2::theme_minimal}},
-#'   default is "PT Sans".
+#' @param font_base_family Base font passed to `base_family` in
+#'   \code{\link{ggplot2::theme_minimal}}, default is "PT Sans".
 #' @param holidays A tibble containing holiday dates in the same format as
 #'   `higlight_days`. Defaults to a list of US Federal Holidays. Set to `NULL`
 #'   to disable.
-#' @param font_label_text Font for label text, default is
-#'   [PT Sans Narrow](https://fonts.google.com/specimen/PT+Sans+Narrow).
+#' @param font_label_family,font_label_text Font for label text, default is
+#'   [PT Sans Narrow](https://fonts.google.com/specimen/PT+Sans+Narrow). Note
+#'   that `font_label_text` is deprecated in favor of `font_label_family`.
 #'
 #' @return A ggplot2 object with the weekly calendar plot.
 #'
@@ -73,8 +74,9 @@ ggweek_planner <- function(
   day_number_color = "grey80",
   weekend_fill = "#f8f8f8",
   holidays = ggweekly::us_federal_holidays,
-  base_font_family = "PT Sans",
-  font_label_text = "PT Sans Narrow"
+  font_base_family = "PT Sans",
+  font_label_family = "PT Sans Narrow",
+  font_label_text = NULL
 ) {
   week_start <- match.arg(week_start)
   if (week_start == "epiweek") {
@@ -87,6 +89,14 @@ ggweek_planner <- function(
     get_year <- lubridate::isoyear
   }
   on.exit(options(old_opts))
+
+  if (!is.null(font_label_text)) {
+    font_label_family <- font_label_text
+    warning(
+      "The `font_label_text` argument has been renamed `font_label_family` ",
+      "and will be removed in a future release of {ggweekly}."
+    )
+  }
 
   if (!inherits(start_day, "Date")) {
     start_day <- lubridate::ymd(start_day)
@@ -137,10 +147,10 @@ ggweek_planner <- function(
     ggplot2::scale_fill_identity() +
     ggplot2::scale_color_identity() +
     ggplot2::guides(fill = FALSE) +
-    ggplot2::theme_minimal(base_family = base_font_family) +
+    ggplot2::theme_minimal(base_family = font_base_family) +
     ggplot2::theme(
       plot.title = ggplot2::element_text(hjust = 0.5),
-      axis.text = ggplot2::element_text(font_label_text),
+      axis.text = ggplot2::element_text(family = font_label_family),
       axis.title = ggplot2::element_blank(),
       panel.grid = ggplot2::element_blank(),
       # axis.text.x.top = ggplot2::element_text(face = "bold"),
@@ -169,7 +179,7 @@ ggweek_planner <- function(
     gcal <- gcal +
       ggplot2::geom_text(
         ggplot2::aes(label = lubridate::day(.data$day)),
-        family = font_label_text,
+        family = font_label_family,
         color = day_number_color,
         size = day_number_text_size,
         hjust = 1,
@@ -189,7 +199,7 @@ ggweek_planner <- function(
       ggplot2::geom_text(
         data = day_one,
         ggplot2::aes(label = .data$month),
-        family = font_label_text,
+        family = font_label_family,
         color = month_color,
         size = month_text_size,
         hjust = 0,
@@ -212,7 +222,7 @@ ggweek_planner <- function(
       ggplot2::geom_text(
         data = dates %>% dplyr::inner_join(holidays, by = "day"),
         ggplot2::aes(label = .data$label, color = .data$color),
-        family = font_label_text,
+        family = font_label_family,
         size = highlight_text_size,
         hjust = 0,
         nudge_x = -0.45,
@@ -234,7 +244,7 @@ ggweek_planner <- function(
       ggplot2::geom_text(
         data = dates %>% dplyr::inner_join(highlight_days, by = "day"),
         ggplot2::aes(label = .data$label, color = .data$color),
-        family = font_label_text,
+        family = font_label_family,
         size = highlight_text_size,
         hjust = 0,
         nudge_x = -0.45,
