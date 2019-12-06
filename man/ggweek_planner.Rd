@@ -13,7 +13,8 @@ ggweek_planner(start_day = lubridate::today(), end_day = start_day +
   month_text_size = 4, day_number_text_size = 2,
   month_color = "#f78154", day_number_color = "grey80",
   weekend_fill = "#f8f8f8", holidays = ggweekly::us_federal_holidays,
-  font_label_text = "PT Sans Narrow")
+  font_base_family = "PT Sans", font_label_family = "PT Sans Narrow",
+  font_label_text = NULL)
 }
 \arguments{
 \item{start_day}{The starting day, either as a YYYY-mm-dd text string or
@@ -56,8 +57,12 @@ with a dotted line?}
 \code{higlight_days}. Defaults to a list of US Federal Holidays. Set to \code{NULL}
 to disable.}
 
-\item{font_label_text}{Font for label text, default is
-\href{https://fonts.google.com/specimen/PT+Sans+Narrow}{PT Sans Narrow}.}
+\item{font_base_family}{Base font passed to \code{base_family} in
+\code{\link{ggplot2::theme_minimal}}, default is "PT Sans".}
+
+\item{font_label_family, font_label_text}{Font for label text, default is
+\href{https://fonts.google.com/specimen/PT+Sans+Narrow}{PT Sans Narrow}. Note
+that \code{font_label_text} is deprecated in favor of \code{font_label_family}.}
 }
 \value{
 A ggplot2 object with the weekly calendar plot.
