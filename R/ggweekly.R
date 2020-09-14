@@ -189,7 +189,7 @@ ggweek_planner <- function(
       )
   }
 
-  if (show_month_start_day) {
+  if (show_month_start_day && nrow(day_one)) {
     gcal <- gcal +
       ggplot2::geom_tile(
         data = day_one,
@@ -253,7 +253,7 @@ ggweek_planner <- function(
       )
   }
 
-  if (show_month_boundaries) {
+  if (show_month_boundaries && nrow(day_one)) {
     month_boundaries <- day_one %>%
       generate_month_boundaries()
 
