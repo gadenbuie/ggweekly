@@ -115,7 +115,7 @@ ggweek_planner <- function(
     dplyr::tibble(
       day       = seq_days,
       wday_name = lubridate::wday(.data$day, label = TRUE, abbr = TRUE),
-      weekend   = .data$wday_name %in% c("Sat", "Sun"),
+      weekend   = lubridate::wday(.data$day, label = FALSE, week_start = 1) %in% 6:7,
       week      = get_week(.data$day),
       month     = lubridate::month(.data$day, label = TRUE, abbr = FALSE),
       year      = get_year(.data$day)
