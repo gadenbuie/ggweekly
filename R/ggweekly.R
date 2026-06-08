@@ -146,7 +146,7 @@ ggweek_planner <- function(
     ggplot2::scale_x_discrete(position = "top") +
     ggplot2::scale_fill_identity() +
     ggplot2::scale_color_identity() +
-    ggplot2::guides(fill = FALSE) +
+    ggplot2::guides(fill = "none") +
     ggplot2::theme_minimal(base_family = font_base_family) +
     ggplot2::theme(
       plot.title = ggplot2::element_text(hjust = 0.5),
